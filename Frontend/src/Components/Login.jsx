@@ -13,17 +13,6 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // const user = JSON.parse(localStorage.getItem("user"));
-
-    // if (user && user.email === email && user.password === password) {
-    //   login(); // Update the global state
-    //   navigate("/");
-    // } else {
-    //   setError(
-    //     "Details mismatched: Email does not exist or password is incorrect."
-    //   );
-    // }
     try {
       const response = await axios.post("http://localhost:8080/users/login", {
         email,
