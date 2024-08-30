@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -5,24 +6,36 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); 
-
-    const user = {
-      name,
-      email,
-      password,
-    };
-
-    localStorage.setItem("user", JSON.stringify(user));
-
-    setName("");
-    setEmail("");
-    setPassword("");
-    navigate("/login");
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const usersResponse = await axios.get("http://localhost:8080/users");
+      console.log("Users Data:", usersResponse.data.length);
+      const userCount = Object.keys(usersResponse.data).length;
+      const newUserId = userCount + 1;
+      console.log(newUserId)
+      const response = await axios.post("http://localhost:8080/users/signup", {
+        id: newUserId,
+        name,
+        password,
+        email,
+      });
+      console.log("Signup Response:", response);
+      if (response.status === 201) {
+        setMessage("User created successfully.");
+        setName("");
+        setEmail("");
+        setPassword("");
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("Error during signup:", err); // Log the error
+      setMessage("User already exists or an error occurred.");
+    }
   };
 
   return (

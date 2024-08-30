@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
-
+import axios from "axios";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,18 +11,31 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    // const user = JSON.parse(localStorage.getItem("user"));
 
-    if (user && user.email === email && user.password === password) {
-      login(); // Update the global state
-      navigate("/");
-    } else {
-      setError(
-        "Details mismatched: Email does not exist or password is incorrect."
-      );
+    // if (user && user.email === email && user.password === password) {
+    //   login(); // Update the global state
+    //   navigate("/");
+    // } else {
+    //   setError(
+    //     "Details mismatched: Email does not exist or password is incorrect."
+    //   );
+    // }
+    try {
+      const response = await axios.post("http://localhost:8080/users/login", {
+        email,
+        password,
+      });
+      if (response.status === 200) {
+        localStorage.setItem("authToken", response.data.token);
+        login(); // Update the global state
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      setError("Invalid credentials.");
     }
   };
 

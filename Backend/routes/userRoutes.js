@@ -1,6 +1,8 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const { generateToken, verifyToken } = require('../utils/jwtUtils');
+
 
 const router = express.Router();
 const dbPath = path.join(__dirname, '../db.json');
@@ -31,7 +33,10 @@ router.post('/signup', (req, res) => {
     db[`user${id}`] = { id, name, password, email };
     writeDb(db);
 
-    res.status(201).json({ message: 'User created successfully.' });
+    const token = generateToken(id);
+
+
+    res.status(201).json({ message: 'User created successfully.', token });
 });
 
 // Login route
@@ -42,7 +47,8 @@ router.post('/login', (req, res) => {
     // Check if user exists
     for (const userId in db) {
         if (db[userId].email === email && db[userId].password === password) {
-            return res.status(200).json({ message: 'Login successful.' });
+            const token = generateToken(db[userId].id);
+            return res.status(200).json({ message: 'Login successful.', token });
         }
     }
 

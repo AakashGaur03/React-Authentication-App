@@ -28,5 +28,11 @@
     "name": "Alex2",
     "password": "password6",
     "email": "alex2@example.com"
+  },
+  "user6": {
+    "id": 6,
+    "name": "Aakash",
+    "password": "123456",
+    "email": "aakash@gmail.com"
   }
 }
