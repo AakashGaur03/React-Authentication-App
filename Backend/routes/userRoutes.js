@@ -3,94 +3,56 @@ const fs = require('fs');
 const path = require('path');
 
 const router = express.Router();
-const USERS_FILE = path.join(__dirname, '../data/users.json');
+const dbPath = path.join(__dirname, '../db.json');
 
-// Endpoint to get a list of users
+// Helper function to read data from db.json
+const readDb = () => {
+    return JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
+};
+
+// Helper function to write data to db.json
+const writeDb = (data) => {
+    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+};
+
+// Signup route
+router.post('/signup', (req, res) => {
+    const { id, name, password, email } = req.body;
+    const db = readDb();
+
+    // Check if user already exists
+    for (const userId in db) {
+        if (db[userId].email === email) {
+            return res.status(400).json({ message: 'User already exists.' });
+        }
+    }
+
+    // Add new user to the database
+    db[`user${id}`] = { id, name, password, email };
+    writeDb(db);
+
+    res.status(201).json({ message: 'User created successfully.' });
+});
+
+// Login route
+router.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    const db = readDb();
+
+    // Check if user exists
+    for (const userId in db) {
+        if (db[userId].email === email && db[userId].password === password) {
+            return res.status(200).json({ message: 'Login successful.' });
+        }
+    }
+
+    res.status(401).json({ message: 'Invalid credentials.' });
+});
+
+// Get all users route
 router.get('/', (req, res) => {
-    fs.readFile(USERS_FILE, 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Error reading file' });
-        }
-        res.json(JSON.parse(data));
-    });
-});
-
-// Endpoint to get a single user by id
-router.get('/:id', (req, res) => {
-    fs.readFile(USERS_FILE, 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Error reading file' });
-        }
-        const users = JSON.parse(data);
-        const user = users[`user${req.params.id}`];
-        if (user) {
-            res.json(user);
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
-    });
-});
-
-// Endpoint to add a new user
-router.post('/', (req, res) => {
-    fs.readFile(USERS_FILE, 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Error reading file' });
-        }
-        const users = JSON.parse(data);
-        const newUser = req.body;
-        users[`user${newUser.id}`] = newUser;
-        fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), (err) => {
-            if (err) {
-                return res.status(500).json({ error: 'Error writing file' });
-            }
-            res.status(201).json(newUser);
-        });
-    });
-});
-
-// Endpoint to update a user by id
-router.put('/:id', (req, res) => {
-    fs.readFile(USERS_FILE, 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Error reading file' });
-        }
-        const users = JSON.parse(data);
-        const userId = `user${req.params.id}`;
-        if (users[userId]) {
-            users[userId] = req.body;
-            fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), (err) => {
-                if (err) {
-                    return res.status(500).json({ error: 'Error writing file' });
-                }
-                res.json(users[userId]);
-            });
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
-    });
-});
-
-// Endpoint to delete a user by id
-router.delete('/:id', (req, res) => {
-    fs.readFile(USERS_FILE, 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Error reading file' });
-        }
-        const users = JSON.parse(data);
-        const userId = `user${req.params.id}`;
-        if (users[userId]) {
-            delete users[userId];
-            fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), (err) => {
-                if (err) {
-                    return res.status(500).json({ error: 'Error writing file' });
-                }
-                res.status(204).end();
-            });
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
-    });
+    const db = readDb();
+    res.status(200).json(db);
 });
 
 module.exports = router;
