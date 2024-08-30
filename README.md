@@ -1,8 +1,22 @@
-# React + Vite
+# React Authentication App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This React application demonstrates user authentication with login and signup functionalities. It utilizes the Context API for state management and `localStorage` to handle user sessions.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Follow these steps to set up and run the project locally:
+
+### 1. Download the Project
+
+1. Download the project ZIP file from the repository.
+2. Extract the contents of the ZIP file.
+
+### 2. Navigate to the Project Directory
+
+Open your terminal or command prompt and navigate to the project directory:
+
+cd React-Authentication-App-main
+
+npm install
+
+npm run dev
