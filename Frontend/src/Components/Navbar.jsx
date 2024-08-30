@@ -13,9 +13,16 @@ const Navbar = () => {
   };
   return (
     <nav className="flex justify-between items-center bg-blue-500 text-white p-4">
-      <Link to="/" className="text-xl font-semibold">
-        App
-      </Link>
+      <div>
+        <Link to="/" className="text-xl font-semibold me-5">
+          App
+        </Link>
+        {isLoggedIn && (
+          <Link to="/dashboard" className="text-xl font-semibold">
+            Dashboard
+          </Link>
+        )}
+      </div>
       <div className="space-x-4">
         {!isLoggedIn ? (
           <>
