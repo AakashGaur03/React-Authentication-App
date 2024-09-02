@@ -34,5 +34,11 @@
     "name": "Aakash",
     "password": "123456",
     "email": "aakash@gmail.com"
+  },
+  "usernull": {
+    "id": null,
+    "name": "Aakash1234",
+    "password": "123456",
+    "email": "aakash1234@gmail.com"
   }
 }
